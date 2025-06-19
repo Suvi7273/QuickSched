@@ -1,0 +1,87 @@
+{% extends "dashboard.html" %} 
+{% load custom_filters %} 
+ 
+{% block content %} 
+ 
+    <h2>View Timetable</h2> 
+    <form method="POST"> 
+        {% csrf_token %} 
+        <label for="user_input">Enter Student ID, Faculty ID, Venue, or 'admin':</label> 
+        <input type="text" name="user_input" required>
+        <br>
+
+        <label for="Academic year">Select Academic year:</label>
+        <select name="academic_year" required>
+            {% for year in years %}
+                <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label for="semester">Select Semester type:</label>
+        <select name="semester" required>
+            {% for sem in semesters %}
+                <option value="{{ sem }}">{{ sem }}</option>
+            {% endfor %}
+        </select>        
+        <br>
+
+        <label for="section">Select section:</label>
+        <select name="section" required>
+            {% for sec in section %}
+                <option value="{{ sec }}" {% if sec == selected_section %}selected{% endif %}>{{ sec }}</option>
+            {% endfor %}
+        </select>        
+        <br>
+
+        <label for="dept">Select department:</label>
+        <select name="dept" required>
+            {% for d in dept %}
+                <option value="{{ d }}" {% if d == selected_dept %}selected{% endif %}>{{ d }}</option>
+            {% endfor %}
+        </select>  
+        <br>
+        <button type="submit">View Timetable</button> 
+    </form> 
+ 
+    {% if error %} 
+        <p style="color: red;">{{ error }}</p> 
+    {% endif %} 
+ 
+    {% if timetable %} 
+        <h3>Timetable:</h3>  
+        <table border="1" cellspacing="0">
+            <tr>
+                <th>Day / Slot</th>  
+                {% for slot in slots %}
+                    <th>{{ slot }}</th>  
+                {% endfor %}
+            </tr>
+        
+            {% for day in days %}
+                <tr>
+                    <td>{{ day }}</td>  
+                    {% for slot in slots %}
+                        <td>
+                            {% with entries=timetable|get_item:day|get_item:slot %}
+                                {% if entries %}
+                                    {% for entry in entries %}
+                                        {{ entry.main_id.course }}  
+                                        Venue: {{ entry.main_id.venue }} /<br>
+                                    {% endfor %}
+                                {% else %}
+                                    --  
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        <form method="get" action="{% url 'download_timetable' %}">
+            <button type="submit" class="btn btn-primary">Download as excel</button>
+        </form>
+        
+    {% endif %} 
+ 
+{% endblock %}

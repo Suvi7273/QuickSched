@@ -1,0 +1,9 @@
+{% extends "dashboard.html" %}
+{% block content %}
+    <h3>Select details of timetable to be edited</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Next</button>
+    </form>
+{% endblock %}

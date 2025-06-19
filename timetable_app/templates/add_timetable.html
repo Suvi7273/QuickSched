@@ -1,0 +1,81 @@
+{% extends "dashboard.html" %}
+{% load custom_filters %} 
+{% block content %}
+<h2>Add Timetable Entry</h2>
+    <p><strong>Current course to be assigned:</strong> {{ current_course }}</p>
+    <form method="post">
+        {% csrf_token %}
+
+        <select name="main_id" required>
+            {% for class in classes %}
+            {% if class.section_id == section or class.section_id == "" or class.section_id is None %}
+            {% if class.dept == dept or class.dept == "" or class.dept is None %}
+                {% if class.academic_year == current_year and class.semester == current_semester %}
+                    <option value="{{ class.main_id }}">
+                        {{ class.course.name }} ({{ class.faculty.all|join:", " }})
+                    </option>
+                {% endif %}
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </select>
+        <br>
+        <label for="days">Select Days:</label>
+        <br>
+        {% for day in form.days.field.choices %}
+            <input type="checkbox" name="days" value="{{ day.0 }}"> {{ day.1 }}<br>
+        {% endfor %}
+        <br>
+
+        <label for="slots">Select Slots:</label>
+        <br>
+        {% for slot in form.slots.field.choices %}
+            <input type="checkbox" name="slots" value="{{ slot.0 }}"> {{ slot.1 }}<br>
+        {% endfor %}
+        <br>
+
+        <button type="submit">Add Timetable Entry</button>
+    </form>
+
+{% if request.user.role == 'Department_Coordinator' and timetable_status.status == 'ga_running' and timetable_status.academic_year == current_year and timetable_status.semester == current_semester and timetable_status.section == section and timetable_status.dept == dept%}
+
+    <form action="{% url 'run_genetic_algorithm' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Run Genetic Algorithm</button>
+    </form>
+{% endif %}
+
+<hr>
+{% if timetable %} 
+        <h3>Timetable:</h3>  
+        <table border="1" cellspacing="0">
+            <tr>
+                <th>Day / Slot</th>  
+                {% for slot in slots %}
+                    <th>{{ slot }}</th>  
+                {% endfor %}
+            </tr>
+        
+            {% for day in days %}
+                <tr>
+                    <td>{{ day }}</td>  
+                    {% for slot in slots %}
+                        <td>
+                            {% with entries=timetable|get_item:day|get_item:slot %}
+                                {% if entries %}
+                                    {% for entry in entries %}
+                                        {{ entry.main_id.course }}  
+                                        Venue: {{ entry.main_id.venue }} /<br>
+                                    {% endfor %}
+                                {% else %}
+                                    --  
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>
+{% endblock %}

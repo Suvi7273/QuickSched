@@ -1,0 +1,12 @@
+{% extends "dashboard.html" %}
+{% block content %}
+<h2>Upload Student Details</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+</form>
+
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>
+{% endblock %}

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            width: 100%;
+            margin: 0;
+        }
+        .content-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            flex-grow: 1; /* Ensure content fills remaining space */
+        }
+        .vision-mission {
+            background: #007bff;
+            color: white;
+            padding: 50px;
+            border-radius: 20px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            text-align: center;
+            position: relative; /* or absolute, depending on context */
+            right: -50px; /* Adjusts position to the right */
+        }
+        .vision-mission h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.5em;
+        }
+        .vision-mission p {
+            margin: 0;
+            font-style: normal;
+            font-size: 1.1em;
+        }
+        .login-container {
+            background: white;
+            width: 500px;
+            height: 325px;
+            padding: 40px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-right: 20px;
+        }
+        input,select {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>MEPCO SCHLENK ENGINEERING COLLEGE,SIVAKASI</h1>
+    <h3>(An Autonomous Institution - Affiliated to Anna University,Chennai)</h3>
+    <p>Email:msec@mepcoeng.ac.in Phone:+91-4562-235000(30 Lines) Fax:+91-4562-235111</p>
+</header> 
+<div class="content-container">
+    <div>
+        <div class="vision-mission">
+            <h3>College Vision</h3>
+            <p>Envisioning a World Lead by our Engineers, holding a Beacon of Hope and Confidence for Generations to come</p>
+        </div>
+        <div class="vision-mission">
+            <h3>College Mission</h3>
+            <p>To Produce Competent, Disciplined and Quality Engineers & Administrators Through Service par Excellence</p>
+        </div>
+    </div>
+    <div class="login-container">
+        <h2>Login</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="error">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username" required><br>
+            <input type="password" name="password" placeholder="Password" required><br>
+            <select name="role" required>
+                <option value="" disabled selected>Select Role</option>
+                <option value="TT_Coordinator">TT Coordinator</option>
+                <option value="Department_Coordinator">Department Coordinator</option>
+                <option value="faculty">Faculty</option>
+                <option value="student">Student</option>
+            </select><br>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
